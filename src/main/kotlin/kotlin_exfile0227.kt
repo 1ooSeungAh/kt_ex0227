@@ -1,6 +1,10 @@
+import com.sun.org.apache.xpath.internal.operations.Bool
+import java.lang.NumberFormatException
+import javax.print.attribute.standard.PagesPerMinute
 
 fun main() {
-    /** 2023.02.27 코틀린 시작 */
+    /**2023.02.27 코틀린 시작*/
+
     //Log.v() - 상세한 로그 출력용
     //Log.d() - 개발에 필요한 내용 출력 위해 사용(개발자용) -코드보면서 제일 많이 본거같음
     //Log.i() - 정보성의 일반적인 메세지 전달
@@ -15,12 +19,13 @@ fun main() {
     b = 1
     //해당 경우는 자료형을 지정해주었기 때문에 정수형 이외에 다른 자료형을 'b'에 담을 수 없다.
 
-    /* 단위(byte)
+        /*단위(byte)
         실수형 : Double(64), float(32)
         정수형 : Long(64), Int(32), Short(16), Byte(8)
         문자형 : Char(1글자), String(다중글자)
         불린형 : Boolean(true, false)
-     */
+        */
+
 
     var sCharText: Char = 'A'
     var sStringText: String = "안녕하세요!"
@@ -48,10 +53,11 @@ fun main() {
     /*
       여러줄인경우
       이렇게 사용합니다.
-    */
-    /**
-    문서화 해야하는 정보를 작성할 때!(이거는 어느 경우에 사용해야 할까요??..)
      */
+
+    /**문서화 해야하는 정보를 작성할 때!(이거는 어느 경우에 사용해야 할까요??..)*/
+
+
 
     var x = "1"
     var y = "2"
@@ -113,8 +119,7 @@ fun main() {
     var arrDouble = DoubleArray(10)
 
 
-    /** 2023.03.05 */
-
+   /**2023.03.05*/
     //사칙연산 출력
     println(3 + 5 + 6)    //14
     println(3 / 3.0)
@@ -244,8 +249,192 @@ fun main() {
     person2.name = "김철수"
     person2.age = 12
 
+    /**2023.03.13*/
+
+    //멤버함수
+
+    class Building
+    {
+        var name = ""
+        var date = ""
+        var area = ""
+
+        fun print()
+    }
+
+    fun print()
+    {
+        println("이름"+this.name)
+        println("건축일자"+this.date)
+    }
+
+    //클래스 옆에 오는 생성자 : 주생성자
+    //클래스 내부에 오는 생성자 : 보조생성자
+    class Time(val second:Int)
+    {
+        init {
+            println("init블록 실행중")
+        }
+
+        //보조생성자
+        constructor(minute:Int, second : Int):this(minute*60+second){
+            println("보조생성자 1 실행중")
+        }
+
+        constructor(hour:Int, minute:Int, second:Int):this(hour*60+minute, second){
+            println("보조생성자 2 실행중")
+        }
+
+        init {
+            println("또 다른 init 블록 실행중")      //init블록이 우선순위 높음(초기화기때문에)
+        }
+    }
+
+    //오버로딩을 이용한 객체의 사칙연산
+    class Point(var a:Int = 0, var b:Int = 0) {
+        operator fun plus(other: Point): Point {
+            return Point(a + other.a, b + other.b)
+        }
+
+        operator fun minus(other:Point):Point{
+            return Point(a - other.a, b - other.b)
+        }
+        fun print() {
+            println("a:$a, b:$b")
+        }
+    }
+
+    val pt1 = Point(3, 7)
+    val pt2 = Point(2, -6)
+
+    val pt3 = pt1+pt2
+    val pt4 = pt1-pt2
+
+    pt3.print()      //결과: a:5, b:1
+    pt4.print()     //결과: a:1, b:13
+
+
+    //오버로딩 하게 되는 경우에 position을 받게되면 해당 위치의 프로퍼티를 반환할 수 있다.
+    class Person1(var name:String, var birthday:String){
+        operator fun get(position:Int):String{
+            return when(position){
+                0->name
+                1->birthday
+                else->"알 수 없음"
+            }
+        }
+        operator fun set(position:Int, value: String){
+            when(position){
+                0->name = value
+                1->birthday = value
+            }
+        }
+    }
+
+    val person3= Person1("Kotlin","2016-02-15")
+    println(person3[0])    //Kotiln
+    println(person3[1])    //2016-02-15
+
+    //어떤 값이 객체에 포함되어있는지 여부 확인
+    println('o' in "Kotlin")   //true
+
+
+    //중위표기법
+    class Point2(var f:Int=0, var d:Int=0){
+        //base를 원점이라 생각했을때 좌표 반환
+        infix fun from(base:Point2):Point2{
+            return Point2(f-base.f, d-base.d)
+        }
+    }
+
+    val pt5 = Point2(3,6) from Point2(1,1)
+    println(pt5.f)         //2
+    println(pt5.d)         //5
+
+
+    //상속(상속 하용을 위해서는 앞에 'open'을 붙여줘야합니다.
+    open class Person3(val name:String, val age:Int)
+    class Students(name:String, age:Int, val id: Int):Person3(name, age)
+
+    //예외처리
+    try{
+        //실행문
+    }
+    catch(e:NumberFormatException) {
+        //예외가 발생한 경우
+    }
+    finally {
+        //예외여부 상관없이 무조건 실행된다.
+    }
+
+    //고의로 예외상황을 만드는 경우(throw)
+    try{
+        something()  //main문 밖에 선언해둬서 검색해야함
+    }catch(e:Exception){
+        print(e.message)
+    }
+
+    //안전호출연산자:참조변수가 null이 아닐경우만 호출
+    var obj:Building? = null
+    obj?.print()    //null값이므로 출력x
+
+    obj = Building()
+    obj?.name = "서울월드컵경기장"
+    obj?.print()    //null값이 아니므로 출력o
+
+
+    //not-null 단정 연산자(null이 있으면 예외없이 표현식 결과를 null로 반환한다.
+    var obj1:Building? = Building()
+    obj1!!.name = "서울시청"
+    println(obj1!!.name)
+
+    obj1 = null
+    obj1!!.print()  //KotilnNullPointerException 예외 발생x_x
+
+    //엘비스 연산자(?:)
+    //피연산자가 null이 아닌 경우 왼쪽 값, null인 경우 오른쪽 값
+    val number:Int?=null
+    println(number?:0)     //0
+
+    val number1:Int?=15
+    println(number1?:0)   //15
+
+    //is 연산자 (참조변수가 어떤 클래스의 인스턴스를 가리키는지 확인)  = instanceof랑 비슷
+    class Professor(name:String,age:Int):Person3(name, age)
+
+    val person4:Person3 = Professor("bsa",33)
+    println("${person4 is Person3}")   //true
+    println("${person4 !is Professor}")   //false(반대)
+
+    //when에서도 이렇게 사용 가능하다
+    when(person4){
+        is Person3 -> {}
+        is Professor -> {}
+    }
+
+    //접근지정자
+    //public : 모든곳에서 접근 가능
+    //internal : 같은 모듈안에서 접근 가능
+    //protected : 클래스내부, 서브클래스안에서만 접근 가능
+    //private : 프로퍼티와 멤버함수, 해당클래스 안에서만 접근, 같은 파일내에서만 접근 가능
+
+    //확장프로퍼티(클래스 밖에서 멤버함수를 선언하는 방법) -isLarge는 main문밖에 있음..
+   println("12321313".isLarge)
+}
+fun something(){
+    val num1 = 10
+    val num2 = 0
+    div(num1, num2)
 }
 
+fun div(a:Int, b:Int):Int{
+    if (b == 0)
+        throw  Exception("0으로 나눌 수 없습니다.")   //type: Nothing(모든 타입에 호환)
+    return a/b
+}
 
+//확장프로퍼티
+val String.isLarge:Boolean
+    get() = this.length >=10
 
     
